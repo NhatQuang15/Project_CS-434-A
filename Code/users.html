@@ -1,0 +1,1938 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Sân Bóng</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            background-color: #ffffff;
+            color: #000000;
+            line-height: 1.6;
+        }
+
+        /* Header Styles */
+        .header {
+            background-color: #16a34a;
+            color: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .header-icon {
+            background-color: white;
+            color: #16a34a;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+        }
+
+        .header-icon svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .header-title h1 {
+            font-size: 1.5rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .header-subtitle {
+            font-size: 0.875rem;
+            color: #bbf7d0;
+        }
+
+        .header-right {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        /* Button Styles */
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            border: none;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+        }
+
+        .btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .btn-primary {
+            background-color: #16a34a;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #15803d;
+        }
+
+        .btn-secondary {
+            background-color: #000000;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #1f2937;
+        }
+
+        .btn-outline {
+            background-color: white;
+            color: #16a34a;
+            border: 1px solid white;
+        }
+
+        .btn-outline:hover {
+            background-color: #f0fdf4;
+        }
+
+        .btn-outline-red {
+            background-color: white;
+            color: #dc2626;
+            border: 1px solid #dc2626;
+        }
+
+        .btn-outline-red:hover {
+            background-color: #fef2f2;
+        }
+
+        .btn-small {
+            padding: 0.375rem 0.75rem;
+            font-size: 0.813rem;
+        }
+
+        .btn-full {
+            width: 100%;
+            justify-content: center;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+
+        /* Tabs */
+        .tabs {
+            margin-bottom: 1.5rem;
+        }
+
+        .tab-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            background-color: #dcfce7;
+            border-radius: 0.5rem;
+            padding: 0.25rem;
+            gap: 0.25rem;
+        }
+
+        .tab-button {
+            padding: 0.5rem 1rem;
+            border: none;
+            background: transparent;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+        }
+
+        .tab-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .tab-button.active {
+            background-color: #16a34a;
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Search Bar */
+        .search-container {
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            border: 1px solid #86efac;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #16a34a;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+        }
+
+        /* Grid */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        /* Card Styles */
+        .card {
+            background: white;
+            border: 1px solid #dcfce7;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            transition: box-shadow 0.2s;
+        }
+
+        .card:hover {
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            position: relative;
+        }
+
+        .card-image-container {
+            position: relative;
+        }
+
+        .badge {
+            position: absolute;
+            top: 0.75rem;
+            right: 0.75rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: white;
+        }
+
+        .badge-green {
+            background-color: #16a34a;
+        }
+
+        .badge-gray {
+            background-color: #6b7280;
+        }
+
+        .badge-yellow {
+            background-color: #ca8a04;
+        }
+
+        .badge-red {
+            background-color: #dc2626;
+        }
+
+        .badge-blue {
+            background-color: #2563eb;
+        }
+
+        .badge-outline-green {
+            background: white;
+            color: #16a34a;
+            border: 1px solid #16a34a;
+        }
+
+        .badge-outline-red {
+            background: white;
+            color: #dc2626;
+            border: 1px solid #dc2626;
+        }
+
+        .card-header {
+            padding: 1.5rem 1.5rem 0;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #000000;
+        }
+
+        .card-description {
+            font-size: 0.875rem;
+            color: #6b7280;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card-content {
+            padding: 1.5rem;
+        }
+
+        .card-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .info-label {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        .info-value {
+            font-weight: 500;
+        }
+
+        .price {
+            color: #16a34a;
+            font-weight: 600;
+        }
+
+        .rating {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+            overflow-y: auto;
+            padding: 1rem;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 0.5rem;
+            width: 100%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 1px solid #dcfce7;
+            animation: modalSlideIn 0.2s ease-out;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #000000;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .modal-footer {
+            padding: 1.5rem;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.75rem;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .form-label-icon {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #86efac;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+        }
+
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: #16a34a;
+        }
+
+        .form-input:disabled {
+            background-color: #f3f4f6;
+            cursor: not-allowed;
+        }
+
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        /* Social Login */
+        .divider {
+            position: relative;
+            margin: 1.5rem 0;
+            text-align: center;
+        }
+
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background-color: #d1d5db;
+        }
+
+        .divider-text {
+            position: relative;
+            display: inline-block;
+            background-color: white;
+            padding: 0 0.75rem;
+            font-size: 0.75rem;
+            color: #6b7280;
+            text-transform: uppercase;
+        }
+
+        .social-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+        }
+
+        .btn-facebook {
+            background: white;
+            color: #1877f2;
+            border: 1px solid #1877f2;
+        }
+
+        .btn-facebook:hover {
+            background-color: #eff6ff;
+        }
+
+        .btn-google {
+            background: white;
+            color: #dc2626;
+            border: 1px solid #dc2626;
+        }
+
+        .btn-google:hover {
+            background-color: #fef2f2;
+        }
+
+        /* Booking Card */
+        .booking-card {
+            border: 1px solid #dcfce7;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .booking-content {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .booking-image {
+            width: 200px;
+            height: 128px;
+            border-radius: 0.5rem;
+            object-fit: cover;
+        }
+
+        .booking-details {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .booking-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.75rem;
+        }
+
+        .booking-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .booking-info-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        .booking-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+        }
+
+        .empty-state-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 1rem;
+            color: #d1d5db;
+        }
+
+        .empty-state-text {
+            color: #6b7280;
+            margin-bottom: 1rem;
+        }
+
+        /* Star Rating */
+        .star-rating {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .star {
+            width: 32px;
+            height: 32px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .star.filled {
+            color: #facc15;
+            fill: #facc15;
+        }
+
+        .star.empty {
+            color: #d1d5db;
+        }
+
+        /* Info Box */
+        .info-box {
+            background-color: #f0fdf4;
+            border-radius: 0.5rem;
+            padding: 1rem;
+        }
+
+        .info-box-title {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            color: #6b7280;
+        }
+
+        .info-box-total {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 600;
+        }
+
+        .info-box-payment {
+            background-color: #f0fdf4;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+
+        .info-box-payment p {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-bottom: 0.5rem;
+        }
+
+        .payment-details {
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+        }
+
+        .payment-details p {
+            margin: 0.25rem 0;
+        }
+
+        /* Mini Card in Modal */
+        .mini-card {
+            border: 1px solid #dcfce7;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .mini-card-content {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .mini-card-image {
+            width: 96px;
+            height: 96px;
+            border-radius: 0.5rem;
+            object-fit: cover;
+        }
+
+        .mini-card-info h4 {
+            color: #000000;
+            margin-bottom: 0.25rem;
+        }
+
+        .mini-card-info p {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-bottom: 0.25rem;
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background-color: #000000;
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            z-index: 10000;
+            animation: toastSlideIn 0.3s ease-out;
+            max-width: 400px;
+        }
+
+        .toast.success {
+            background-color: #16a34a;
+        }
+
+        .toast.error {
+            background-color: #dc2626;
+        }
+
+        @keyframes toastSlideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .header-right {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .booking-content {
+                flex-direction: column;
+            }
+
+            .booking-image {
+                width: 100%;
+            }
+
+            .social-buttons {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-content {
+                max-width: 95%;
+            }
+        }
+
+        /* Loading State */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Utility Classes */
+        .text-gray {
+            color: #6b7280;
+        }
+
+        .text-green {
+            color: #16a34a;
+        }
+
+        .text-red {
+            color: #dc2626;
+        }
+
+        .text-sm {
+            font-size: 0.875rem;
+        }
+
+        .text-xs {
+            font-size: 0.75rem;
+        }
+
+        .mb-0 {
+            margin-bottom: 0;
+        }
+
+        .mt-1 {
+            margin-top: 0.5rem;
+        }
+
+        .flex {
+            display: flex;
+        }
+
+        .items-center {
+            align-items: center;
+        }
+
+        .gap-1 {
+            gap: 0.25rem;
+        }
+
+        .gap-2 {
+            gap: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <div class="header-left">
+                <div class="header-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                    </svg>
+                </div>
+                <div class="header-title">
+                    <h1>Quản Lý Sân Bóng</h1>
+                    <p class="header-subtitle">Đặt sân nhanh chóng, tiện lợi</p>
+                </div>
+            </div>
+            <div class="header-right">
+                <div id="auth-buttons">
+                    <button class="btn btn-outline" onclick="openModal('loginModal')">Đăng nhập</button>
+                    <button class="btn btn-secondary" onclick="openModal('registerModal')">Đăng ký</button>
+                </div>
+                <div id="user-info" class="hidden">
+                    <button class="btn btn-outline" onclick="openModal('profileModal')">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                        <span id="user-name">User</span>
+                    </button>
+                    <button class="btn btn-outline" onclick="logout()">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                            <polyline points="16 17 21 12 16 7"></polyline>
+                            <line x1="21" y1="12" x2="9" y2="12"></line>
+                        </svg>
+                        Đăng xuất
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Tabs -->
+        <div class="tabs">
+            <div class="tab-list">
+                <button class="tab-button active" onclick="switchTab('search')">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                    Tìm kiếm sân
+                </button>
+                <button class="tab-button" id="bookings-tab" onclick="switchTab('bookings')" disabled>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                    </svg>
+                    Lịch sử đặt sân
+                </button>
+            </div>
+        </div>
+
+        <!-- Search Tab -->
+        <div id="search-tab" class="tab-content active">
+            <!-- Search Bar -->
+            <div class="search-container">
+                <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <input type="text" id="search-input" class="search-input" placeholder="Tìm kiếm theo tên sân, vị trí, loại sân..." oninput="searchFields()">
+            </div>
+
+            <!-- Fields Grid -->
+            <div id="fields-grid" class="grid"></div>
+
+            <!-- Empty State -->
+            <div id="empty-search" class="empty-state hidden">
+                <svg class="empty-state-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <p class="empty-state-text">Không tìm thấy sân bóng phù hợp</p>
+            </div>
+        </div>
+
+        <!-- Bookings Tab -->
+        <div id="bookings-tab-content" class="tab-content">
+            <div id="bookings-list"></div>
+            
+            <!-- Empty State -->
+            <div id="empty-bookings" class="empty-state">
+                <svg class="empty-state-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
+                <p class="empty-state-text">Bạn chưa có lịch đặt sân nào</p>
+                <button class="btn btn-primary" onclick="switchTab('search')">Đặt sân ngay</button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Đăng nhập</h2>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label" for="login-email">Email</label>
+                    <input type="email" id="login-email" class="form-input" placeholder="your@email.com">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="login-password">Mật khẩu</label>
+                    <input type="password" id="login-password" class="form-input" placeholder="••••••">
+                </div>
+                
+                <div class="divider">
+                    <span class="divider-text">Hoặc đăng nhập với</span>
+                </div>
+                
+                <div class="social-buttons">
+                    <button class="btn btn-facebook" onclick="socialLogin('facebook')">
+                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                        </svg>
+                        Facebook
+                    </button>
+                    <button class="btn btn-google" onclick="socialLogin('google')">
+                        <svg width="20" height="20" viewBox="0 0 24 24">
+                            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                        </svg>
+                        Google
+                    </button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" onclick="closeModal('loginModal')">Huỷ</button>
+                <button class="btn btn-primary" onclick="handleLogin()">Đăng nhập</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div id="registerModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Đăng ký tài khoản</h2>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label" for="register-name">Họ và tên</label>
+                    <input type="text" id="register-name" class="form-input" placeholder="Nguyễn Văn A">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="register-phone">Số điện thoại</label>
+                    <input type="tel" id="register-phone" class="form-input" placeholder="0901234567">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="register-email">Email</label>
+                    <input type="email" id="register-email" class="form-input" placeholder="your@email.com">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="register-password">Mật khẩu</label>
+                    <input type="password" id="register-password" class="form-input" placeholder="••••••">
+                </div>
+                
+                <div class="divider">
+                    <span class="divider-text">Hoặc đăng ký với</span>
+                </div>
+                
+                <div class="social-buttons">
+                    <button class="btn btn-facebook" onclick="socialRegister('facebook')">
+                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                        </svg>
+                        Facebook
+                    </button>
+                    <button class="btn btn-google" onclick="socialRegister('google')">
+                        <svg width="20" height="20" viewBox="0 0 24 24">
+                            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                        </svg>
+                        Google
+                    </button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" onclick="closeModal('registerModal')">Huỷ</button>
+                <button class="btn btn-primary" onclick="handleRegister()">Đăng ký</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Modal -->
+    <div id="profileModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <circle cx="12" cy="10" r="3"></circle>
+                        <path d="M7 20.662V19a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1.662"></path>
+                    </svg>
+                    Cập nhật thông tin cá nhân
+                </h2>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">
+                        <div class="form-label-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                            Họ và tên
+                        </div>
+                    </label>
+                    <input type="text" id="profile-name" class="form-input" placeholder="Nguyễn Văn A">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">
+                        <div class="form-label-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                            </svg>
+                            Số điện thoại
+                        </div>
+                    </label>
+                    <input type="tel" id="profile-phone" class="form-input" placeholder="0901234567">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">
+                        <div class="form-label-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                <polyline points="22,6 12,13 2,6"></polyline>
+                            </svg>
+                            Email
+                        </div>
+                    </label>
+                    <input type="email" id="profile-email" class="form-input" disabled>
+                </div>
+                <button class="btn btn-outline btn-full" onclick="openPasswordModal()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                    </svg>
+                    Đổi mật khẩu
+                </button>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" onclick="closeModal('profileModal')">Huỷ</button>
+                <button class="btn btn-primary" onclick="updateProfile()">Cập nhật</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Password Modal -->
+    <div id="passwordModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                    </svg>
+                    Đổi mật khẩu
+                </h2>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label" for="current-password">Mật khẩu hiện tại</label>
+                    <input type="password" id="current-password" class="form-input" placeholder="••••••">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="new-password">Mật khẩu mới</label>
+                    <input type="password" id="new-password" class="form-input" placeholder="••••••">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="confirm-password">Xác nhận mật khẩu mới</label>
+                    <input type="password" id="confirm-password" class="form-input" placeholder="••••••">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" onclick="closeModal('passwordModal')">Huỷ</button>
+                <button class="btn btn-primary" onclick="changePassword()">Đổi mật khẩu</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Booking Modal -->
+    <div id="bookingModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Đặt sân</h2>
+            </div>
+            <div class="modal-body">
+                <div id="booking-field-info" class="mini-card"></div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="booking-date">Ngày đặt</label>
+                    <input type="date" id="booking-date" class="form-input">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="booking-time">Khung giờ</label>
+                    <select id="booking-time" class="form-select">
+                        <option value="">Chọn khung giờ</option>
+                        <option value="06:00 - 08:00">06:00 - 08:00</option>
+                        <option value="08:00 - 10:00">08:00 - 10:00</option>
+                        <option value="10:00 - 12:00">10:00 - 12:00</option>
+                        <option value="14:00 - 16:00">14:00 - 16:00</option>
+                        <option value="16:00 - 18:00">16:00 - 18:00</option>
+                        <option value="18:00 - 20:00">18:00 - 20:00</option>
+                        <option value="20:00 - 22:00">20:00 - 22:00</option>
+                    </select>
+                </div>
+                
+                <div class="info-box" id="booking-price-info"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" onclick="closeModal('bookingModal')">Huỷ</button>
+                <button class="btn btn-primary" onclick="confirmBooking()">Xác nhận đặt sân</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Modal -->
+    <div id="paymentModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                        <line x1="1" y1="10" x2="23" y2="10"></line>
+                    </svg>
+                    Thanh toán
+                </h2>
+            </div>
+            <div class="modal-body">
+                <div id="payment-info" class="mini-card"></div>
+                
+                <div class="info-box-payment">
+                    <p>Vui lòng chuyển khoản theo thông tin sau:</p>
+                    <div class="payment-details">
+                        <p><strong>Ngân hàng:</strong> Vietcombank</p>
+                        <p><strong>Số tài khoản:</strong> 1234567890</p>
+                        <p><strong>Chủ tài khoản:</strong> Quản Lý Sân Bóng</p>
+                        <p><strong>Nội dung:</strong> <span id="payment-content">DatSan</span></p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" onclick="closeModal('paymentModal')">Huỷ</button>
+                <button class="btn btn-primary" onclick="confirmPayment()">Xác nhận đã thanh toán</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Review Modal -->
+    <div id="reviewModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                    </svg>
+                    Đánh giá sân bóng
+                </h2>
+            </div>
+            <div class="modal-body">
+                <div id="review-info" class="mini-card"></div>
+                
+                <div class="form-group">
+                    <label class="form-label">Đánh giá của bạn</label>
+                    <div class="star-rating" id="star-rating">
+                        <svg class="star" data-rating="1" onclick="setRating(1)" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                        </svg>
+                        <svg class="star" data-rating="2" onclick="setRating(2)" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                        </svg>
+                        <svg class="star" data-rating="3" onclick="setRating(3)" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                        </svg>
+                        <svg class="star" data-rating="4" onclick="setRating(4)" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                        </svg>
+                        <svg class="star" data-rating="5" onclick="setRating(5)" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                        </svg>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="review-comment">Nhận xét</label>
+                    <textarea id="review-comment" class="form-textarea" placeholder="Chia sẻ trải nghiệm của bạn..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" onclick="closeModal('reviewModal')">Huỷ</button>
+                <button class="btn btn-primary" onclick="submitReview()">Gửi đánh giá</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cancel Booking Modal -->
+    <div id="cancelModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title text-red">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                    Xác nhận huỷ đặt sân
+                </h2>
+            </div>
+            <div class="modal-body">
+                <p class="text-gray">Bạn có chắc chắn muốn huỷ đặt sân này?</p>
+                <div id="cancel-info" class="mini-card" style="border-color: #fecaca; margin-top: 1rem;"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" onclick="closeModal('cancelModal')">Không</button>
+                <button class="btn btn-outline-red" onclick="confirmCancel()">Xác nhận huỷ</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data Storage
+        let currentUser = null;
+        let users = [
+            { id: '1', email: 'user@example.com', password: '123456', name: 'Nguyễn Văn A', phone: '0901234567' }
+        ];
+
+        let fields = [
+            {
+                id: '1',
+                name: 'Sân Bóng Số 1',
+                type: 'Sân 5 người',
+                pricePerHour: 200000,
+                location: 'Quận 1, TP.HCM',
+                available: true,
+                rating: 4.5,
+                image: 'https://images.unsplash.com/photo-1459865264687-595d652de67e?w=400'
+            },
+            {
+                id: '2',
+                name: 'Sân Bóng Số 2',
+                type: 'Sân 7 người',
+                pricePerHour: 300000,
+                location: 'Quận 3, TP.HCM',
+                available: true,
+                rating: 4.8,
+                image: 'https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?w=400'
+            },
+            {
+                id: '3',
+                name: 'Sân Bóng Số 3',
+                type: 'Sân 11 người',
+                pricePerHour: 500000,
+                location: 'Quận 7, TP.HCM',
+                available: true,
+                rating: 4.2,
+                image: 'https://images.unsplash.com/photo-1522778119026-d647f0596c20?w=400'
+            }
+        ];
+
+        let bookings = [
+            {
+                id: '1',
+                userId: '1',
+                fieldId: '1',
+                date: '2024-11-25',
+                timeSlot: '18:00 - 20:00',
+                status: 'confirmed',
+                totalPrice: 400000,
+                paymentStatus: 'paid'
+            }
+        ];
+
+        let reviews = [];
+        let selectedField = null;
+        let selectedBooking = null;
+        let currentRating = 5;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            renderFields();
+            updateAuthUI();
+            
+            // Set min date for booking
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('booking-date').setAttribute('min', today);
+            
+            // Initialize star rating
+            updateStarRating(5);
+        });
+
+        // Modal Functions
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.classList.remove('active');
+            }
+        }
+
+        // Tab Functions
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+
+            if (tabName === 'search') {
+                document.querySelector('.tab-button:first-child').classList.add('active');
+                document.getElementById('search-tab').classList.add('active');
+            } else if (tabName === 'bookings') {
+                document.getElementById('bookings-tab').classList.add('active');
+                document.getElementById('bookings-tab-content').classList.add('active');
+                renderBookings();
+            }
+        }
+
+        // Auth Functions
+        function handleLogin() {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+
+            const user = users.find(u => u.email === email && u.password === password);
+            if (user) {
+                currentUser = user;
+                closeModal('loginModal');
+                document.getElementById('login-email').value = '';
+                document.getElementById('login-password').value = '';
+                showToast('Đăng nhập thành công!', 'success');
+                updateAuthUI();
+            } else {
+                showToast('Email hoặc mật khẩu không đúng!', 'error');
+            }
+        }
+
+        function handleRegister() {
+            const name = document.getElementById('register-name').value;
+            const phone = document.getElementById('register-phone').value;
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+
+            if (!name || !phone || !email || !password) {
+                showToast('Vui lòng điền đầy đủ thông tin!', 'error');
+                return;
+            }
+
+            const existingUser = users.find(u => u.email === email);
+            if (existingUser) {
+                showToast('Email đã tồn tại!', 'error');
+                return;
+            }
+
+            const newUser = {
+                id: Date.now().toString(),
+                email,
+                password,
+                name,
+                phone
+            };
+
+            users.push(newUser);
+            closeModal('registerModal');
+            document.getElementById('register-name').value = '';
+            document.getElementById('register-phone').value = '';
+            document.getElementById('register-email').value = '';
+            document.getElementById('register-password').value = '';
+            showToast('Đăng ký thành công! Vui lòng đăng nhập.', 'success');
+        }
+
+        function socialLogin(provider) {
+            const mockUser = {
+                id: Date.now().toString(),
+                email: `user.${provider}@example.com`,
+                password: '',
+                name: `User from ${provider}`,
+                phone: '0900000000'
+            };
+            users.push(mockUser);
+            currentUser = mockUser;
+            closeModal('loginModal');
+            showToast(`Đăng nhập bằng ${provider === 'facebook' ? 'Facebook' : 'Google'} thành công!`, 'success');
+            updateAuthUI();
+        }
+
+        function socialRegister(provider) {
+            const mockUser = {
+                id: Date.now().toString(),
+                email: `newuser.${provider}@example.com`,
+                password: '',
+                name: `New User from ${provider}`,
+                phone: '0900000000'
+            };
+            users.push(mockUser);
+            closeModal('registerModal');
+            showToast(`Đăng ký bằng ${provider === 'facebook' ? 'Facebook' : 'Google'} thành công! Vui lòng đăng nhập.`, 'success');
+        }
+
+        function logout() {
+            currentUser = null;
+            updateAuthUI();
+            switchTab('search');
+            showToast('Đăng xuất thành công!', 'success');
+        }
+
+        function updateAuthUI() {
+            const authButtons = document.getElementById('auth-buttons');
+            const userInfo = document.getElementById('user-info');
+            const bookingsTab = document.getElementById('bookings-tab');
+
+            if (currentUser) {
+                authButtons.classList.add('hidden');
+                userInfo.classList.remove('hidden');
+                document.getElementById('user-name').textContent = currentUser.name;
+                bookingsTab.disabled = false;
+            } else {
+                authButtons.classList.remove('hidden');
+                userInfo.classList.add('hidden');
+                bookingsTab.disabled = true;
+            }
+        }
+
+        // Profile Functions
+        function openPasswordModal() {
+            closeModal('profileModal');
+            openModal('passwordModal');
+        }
+
+        function updateProfile() {
+            if (!currentUser) return;
+
+            const name = document.getElementById('profile-name').value;
+            const phone = document.getElementById('profile-phone').value;
+
+            currentUser.name = name;
+            currentUser.phone = phone;
+
+            const userIndex = users.findIndex(u => u.id === currentUser.id);
+            if (userIndex !== -1) {
+                users[userIndex] = currentUser;
+            }
+
+            closeModal('profileModal');
+            updateAuthUI();
+            showToast('Cập nhật thông tin thành công!', 'success');
+        }
+
+        function changePassword() {
+            if (!currentUser) return;
+
+            const currentPassword = document.getElementById('current-password').value;
+            const newPassword = document.getElementById('new-password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+
+            if (currentPassword !== currentUser.password) {
+                showToast('Mật khẩu hiện tại không đúng!', 'error');
+                return;
+            }
+
+            if (newPassword !== confirmPassword) {
+                showToast('Mật khẩu mới không khớp!', 'error');
+                return;
+            }
+
+            if (newPassword.length < 6) {
+                showToast('Mật khẩu phải có ít nhất 6 ký tự!', 'error');
+                return;
+            }
+
+            currentUser.password = newPassword;
+            const userIndex = users.findIndex(u => u.id === currentUser.id);
+            if (userIndex !== -1) {
+                users[userIndex] = currentUser;
+            }
+
+            closeModal('passwordModal');
+            document.getElementById('current-password').value = '';
+            document.getElementById('new-password').value = '';
+            document.getElementById('confirm-password').value = '';
+            showToast('Đổi mật khẩu thành công!', 'success');
+        }
+
+        // Search Functions
+        function searchFields() {
+            const query = document.getElementById('search-input').value.toLowerCase();
+            const filteredFields = fields.filter(field => 
+                field.name.toLowerCase().includes(query) ||
+                field.location.toLowerCase().includes(query) ||
+                field.type.toLowerCase().includes(query)
+            );
+
+            renderFields(filteredFields);
+        }
+
+        // Render Functions
+        function renderFields(fieldsToRender = fields) {
+            const grid = document.getElementById('fields-grid');
+            const emptyState = document.getElementById('empty-search');
+
+            if (fieldsToRender.length === 0) {
+                grid.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+            grid.innerHTML = fieldsToRender.map(field => `
+                <div class="card">
+                    <div class="card-image-container">
+                        <img src="${field.image}" alt="${field.name}" class="card-image">
+                        <span class="badge ${field.available ? 'badge-green' : 'badge-gray'}">
+                            ${field.available ? 'Còn trống' : 'Đã đầy'}
+                        </span>
+                    </div>
+                    <div class="card-header">
+                        <h3 class="card-title">${field.name}</h3>
+                        <p class="card-description">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                <circle cx="12" cy="10" r="3"></circle>
+                            </svg>
+                            ${field.location}
+                        </p>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-info">
+                            <div class="info-row">
+                                <span class="info-label">${field.type}</span>
+                                <div class="rating">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#facc15" stroke="#facc15" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                                    </svg>
+                                    <span>${field.rating}</span>
+                                </div>
+                            </div>
+                            <div class="info-row">
+                                <span class="price">${field.pricePerHour.toLocaleString('vi-VN')} đ/giờ</span>
+                            </div>
+                            <button class="btn btn-primary btn-full" onclick="openBookingModal('${field.id}')" ${!field.available ? 'disabled' : ''}>
+                                Đặt sân ngay
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderBookings() {
+            if (!currentUser) return;
+
+            const userBookings = bookings.filter(b => b.userId === currentUser.id);
+            const bookingsList = document.getElementById('bookings-list');
+            const emptyState = document.getElementById('empty-bookings');
+
+            if (userBookings.length === 0) {
+                bookingsList.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+            bookingsList.innerHTML = userBookings.map(booking => {
+                const field = fields.find(f => f.id === booking.fieldId);
+                if (!field) return '';
+
+                const statusClass = 
+                    booking.status === 'confirmed' ? 'badge-green' :
+                    booking.status === 'pending' ? 'badge-yellow' :
+                    booking.status === 'cancelled' ? 'badge-red' : 'badge-blue';
+
+                const statusText = 
+                    booking.status === 'confirmed' ? 'Đã xác nhận' :
+                    booking.status === 'pending' ? 'Chờ xử lý' :
+                    booking.status === 'cancelled' ? 'Đã huỷ' : 'Hoàn thành';
+
+                const paymentClass = booking.paymentStatus === 'paid' ? 'badge-outline-green' : 'badge-outline-red';
+                const paymentText = booking.paymentStatus === 'paid' ? 'Đã thanh toán' : 'Chưa thanh toán';
+
+                return `
+                    <div class="booking-card">
+                        <div class="booking-content">
+                            <img src="${field.image}" alt="${field.name}" class="booking-image">
+                            <div class="booking-details">
+                                <div class="booking-header">
+                                    <div>
+                                        <h3 class="card-title">${field.name}</h3>
+                                        <p class="text-sm text-gray">${field.type}</p>
+                                    </div>
+                                    <span class="badge ${statusClass}">${statusText}</span>
+                                </div>
+                                <div class="booking-info">
+                                    <div class="booking-info-item">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                                        </svg>
+                                        ${booking.date}
+                                    </div>
+                                    <div class="booking-info-item">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <circle cx="12" cy="12" r="10"></circle>
+                                            <polyline points="12 6 12 12 16 14"></polyline>
+                                        </svg>
+                                        ${booking.timeSlot}
+                                    </div>
+                                    <div class="booking-info-item">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                                            <line x1="1" y1="10" x2="23" y2="10"></line>
+                                        </svg>
+                                        <span class="text-green">${booking.totalPrice.toLocaleString('vi-VN')} đ</span>
+                                        <span class="badge ${paymentClass}">${paymentText}</span>
+                                    </div>
+                                </div>
+                                <div class="booking-actions">
+                                    ${booking.status === 'pending' && booking.paymentStatus === 'unpaid' ? `
+                                        <button class="btn btn-primary btn-small" onclick="openPaymentModal('${booking.id}')">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                                                <line x1="1" y1="10" x2="23" y2="10"></line>
+                                            </svg>
+                                            Thanh toán
+                                        </button>
+                                    ` : ''}
+                                    ${booking.status === 'pending' || booking.status === 'confirmed' ? `
+                                        <button class="btn btn-outline-red btn-small" onclick="openCancelModal('${booking.id}')">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                                            </svg>
+                                            Huỷ đặt sân
+                                        </button>
+                                    ` : ''}
+                                    ${booking.status === 'confirmed' && booking.paymentStatus === 'paid' ? `
+                                        <button class="btn btn-outline btn-small" style="border-color: #16a34a; color: #16a34a;" onclick="openReviewModal('${booking.id}')">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                                            </svg>
+                                            Đánh giá
+                                        </button>
+                                    ` : ''}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Booking Functions
+        function openBookingModal(fieldId) {
+            if (!currentUser) {
+                showToast('Vui lòng đăng nhập để đặt sân!', 'error');
+                openModal('loginModal');
+                return;
+            }
+
+            selectedField = fields.find(f => f.id === fieldId);
+            if (!selectedField) return;
+
+            const fieldInfo = document.getElementById('booking-field-info');
+            fieldInfo.innerHTML = `
+                <div class="mini-card-content">
+                    <img src="${selectedField.image}" alt="${selectedField.name}" class="mini-card-image">
+                    <div class="mini-card-info">
+                        <h4>${selectedField.name}</h4>
+                        <p>${selectedField.type}</p>
+                        <p class="text-green">${selectedField.pricePerHour.toLocaleString('vi-VN')} đ/giờ</p>
+                    </div>
+                </div>
+            `;
+
+            const priceInfo = document.getElementById('booking-price-info');
+            priceInfo.innerHTML = `
+                <div class="info-box-title">
+                    <span class="text-gray">Giá thuê (2 giờ):</span>
+                    <span class="text-green">${(selectedField.pricePerHour * 2).toLocaleString('vi-VN')} đ</span>
+                </div>
+                <div class="info-box-total">
+                    <span>Tổng cộng:</span>
+                    <span class="text-green">${(selectedField.pricePerHour * 2).toLocaleString('vi-VN')} đ</span>
+                </div>
+            `;
+
+            openModal('bookingModal');
+        }
+
+        function confirmBooking() {
+            if (!currentUser || !selectedField) return;
+
+            const date = document.getElementById('booking-date').value;
+            const timeSlot = document.getElementById('booking-time').value;
+
+            if (!date || !timeSlot) {
+                showToast('Vui lòng điền đầy đủ thông tin!', 'error');
+                return;
+            }
+
+            const newBooking = {
+                id: Date.now().toString(),
+                userId: currentUser.id,
+                fieldId: selectedField.id,
+                date,
+                timeSlot,
+                status: 'pending',
+                totalPrice: selectedField.pricePerHour * 2,
+                paymentStatus: 'unpaid'
+            };
+
+            bookings.push(newBooking);
+            closeModal('bookingModal');
+            document.getElementById('booking-date').value = '';
+            document.getElementById('booking-time').value = '';
+            showToast('Đặt sân thành công!', 'success');
+            switchTab('bookings');
+        }
+
+        // Payment Functions
+        function openPaymentModal(bookingId) {
+            selectedBooking = bookings.find(b => b.id === bookingId);
+            if (!selectedBooking) return;
+
+            const field = fields.find(f => f.id === selectedBooking.fieldId);
+            if (!field) return;
+
+            const paymentInfo = document.getElementById('payment-info');
+            paymentInfo.innerHTML = `
+                <div style="padding: 1rem; border: 1px solid #dcfce7; border-radius: 0.5rem;">
+                    <div class="info-row" style="margin-bottom: 0.5rem;">
+                        <span class="text-gray">Sân:</span>
+                        <span>${field.name}</span>
+                    </div>
+                    <div class="info-row" style="margin-bottom: 0.5rem;">
+                        <span class="text-gray">Ngày:</span>
+                        <span>${selectedBooking.date}</span>
+                    </div>
+                    <div class="info-row" style="margin-bottom: 0.5rem;">
+                        <span class="text-gray">Giờ:</span>
+                        <span>${selectedBooking.timeSlot}</span>
+                    </div>
+                    <div style="border-top: 1px solid #dcfce7; padding-top: 0.5rem; margin-top: 0.5rem;">
+                        <div class="info-row">
+                            <span>Tổng tiền:</span>
+                            <span class="text-green">${selectedBooking.totalPrice.toLocaleString('vi-VN')} đ</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('payment-content').textContent = `DatSan ${selectedBooking.id}`;
+            openModal('paymentModal');
+        }
+
+        function confirmPayment() {
+            if (!selectedBooking) return;
+
+            const bookingIndex = bookings.findIndex(b => b.id === selectedBooking.id);
+            if (bookingIndex !== -1) {
+                bookings[bookingIndex].paymentStatus = 'paid';
+                bookings[bookingIndex].status = 'confirmed';
+            }
+
+            closeModal('paymentModal');
+            selectedBooking = null;
+            showToast('Thanh toán thành công!', 'success');
+            renderBookings();
+        }
+
+        // Review Functions
+        function openReviewModal(bookingId) {
+            selectedBooking = bookings.find(b => b.id === bookingId);
+            if (!selectedBooking) return;
+
+            const field = fields.find(f => f.id === selectedBooking.fieldId);
+            if (!field) return;
+
+            const reviewInfo = document.getElementById('review-info');
+            reviewInfo.innerHTML = `
+                <div style="padding: 1rem;">
+                    <p class="text-black">${field.name}</p>
+                    <p class="text-sm text-gray">${selectedBooking.date} - ${selectedBooking.timeSlot}</p>
+                </div>
+            `;
+
+            currentRating = 5;
+            updateStarRating(5);
+            document.getElementById('review-comment').value = '';
+            openModal('reviewModal');
+        }
+
+        function setRating(rating) {
+            currentRating = rating;
+            updateStarRating(rating);
+        }
+
+        function updateStarRating(rating) {
+            const stars = document.querySelectorAll('#star-rating .star');
+            stars.forEach((star, index) => {
+                if (index < rating) {
+                    star.classList.add('filled');
+                    star.classList.remove('empty');
+                } else {
+                    star.classList.add('empty');
+                    star.classList.remove('filled');
+                }
+            });
+        }
+
+        function submitReview() {
+            if (!currentUser || !selectedBooking) return;
+
+            const comment = document.getElementById('review-comment').value;
+            if (!comment) {
+                showToast('Vui lòng nhập nhận xét!', 'error');
+                return;
+            }
+
+            const newReview = {
+                id: Date.now().toString(),
+                userId: currentUser.id,
+                fieldId: selectedBooking.fieldId,
+                bookingId: selectedBooking.id,
+                rating: currentRating,
+                comment,
+                date: new Date().toISOString()
+            };
+
+            reviews.push(newReview);
+
+            const bookingIndex = bookings.findIndex(b => b.id === selectedBooking.id);
+            if (bookingIndex !== -1) {
+                bookings[bookingIndex].status = 'completed';
+            }
+
+            closeModal('reviewModal');
+            selectedBooking = null;
+            showToast('Đánh giá thành công!', 'success');
+            renderBookings();
+        }
+
+        // Cancel Functions
+        function openCancelModal(bookingId) {
+            selectedBooking = bookings.find(b => b.id === bookingId);
+            if (!selectedBooking) return;
+
+            const field = fields.find(f => f.id === selectedBooking.fieldId);
+            if (!field) return;
+
+            const cancelInfo = document.getElementById('cancel-info');
+            cancelInfo.innerHTML = `
+                <div style="padding: 1rem;">
+                    <p class="text-black">${field.name}</p>
+                    <p class="text-sm text-gray">${selectedBooking.date} - ${selectedBooking.timeSlot}</p>
+                    ${selectedBooking.paymentStatus === 'paid' ? 
+                        '<p class="text-sm text-red" style="margin-top: 0.5rem;">Lưu ý: Tiền đã thanh toán sẽ được hoàn lại trong 3-5 ngày làm việc</p>' 
+                        : ''
+                    }
+                </div>
+            `;
+
+            openModal('cancelModal');
+        }
+
+        function confirmCancel() {
+            if (!selectedBooking) return;
+
+            const bookingIndex = bookings.findIndex(b => b.id === selectedBooking.id);
+            if (bookingIndex !== -1) {
+                bookings[bookingIndex].status = 'cancelled';
+            }
+
+            closeModal('cancelModal');
+            selectedBooking = null;
+            showToast('Huỷ đặt sân thành công!', 'success');
+            renderBookings();
+        }
+
+        // Toast Function
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+
+        // Profile Modal Handler
+        document.getElementById('user-info')?.addEventListener('click', function(e) {
+            if (e.target.closest('button')?.onclick?.toString().includes('openModal')) {
+                if (currentUser) {
+                    document.getElementById('profile-name').value = currentUser.name;
+                    document.getElementById('profile-phone').value = currentUser.phone;
+                    document.getElementById('profile-email').value = currentUser.email;
+                }
+            }
+        });
+    </script>
+</body>
+</html>
