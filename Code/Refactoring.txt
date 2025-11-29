@@ -1,0 +1,20 @@
+Extract Function
+Extract Class
+Inline Function
+Inline Variable
+Rename Variable
+Rename Method
+Replace Magic Number with Constant
+Replace Conditional with Lookup Table
+Remove Dead Code
+Simplify Conditional Expressions
+Replace Nested Conditional with Guard Clauses
+Move Function
+Move Field
+Introduce Parameter Object
+Consolidate Duplicate Code
+Encapsulate Field
+Introduce Explaining Variable
+Replace Method with Method Object
+Introduce Null Object
+Data-Driven Refactoring
